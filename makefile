@@ -10,11 +10,14 @@ main: main.o caller.o reduction.o
 main.o: main.cpp reduction_header.cuh
 	g++ -std=c++11 -c main.cpp
 
-wrapperCaller.o: caller.cpp reduction_header.cuh
+caller.o: caller.cpp reduction_header.cuh
 	g++ -std=c++11 -c caller.cpp
 
 reduction.o: reduction.cu reduction_header.cuh
 	${NVCC} ${CUDAFLAGS} -std=c++11 -c reduction.cu
 
+reduction_1.o: reduction_1.cu reduction_header.cuh
+	${NVCC} ${CUDAFLAGS} -std=c++11 -c reduction_1.cu
+
 clean:
-	${RM} *.o main
+	${RM} *.o main caller reduction reduction_1
