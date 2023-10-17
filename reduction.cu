@@ -1,18 +1,47 @@
 #include "reduction_header.cuh"
 #include "device_launch_parameters.h"
 #include "cuda.h"
+#include "cuda_runtime.h"
 
-#include <cuda_runtime.h>
+#include <iostream>
 #include <utility>
 #include <type_traits>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "reduction_1.cu"
+#include "reduction_2.cu"
+#include "reduction_3.cu"
+#include "reduction_4.cu"
+#include "reduction_5.cu"
+#include "reduction_6.cu"
 
 __global__ void cuda_global(int *dev_a, int *dev_b)
-{    
-  dev_b = reduction_1(dev_a, dev_b);
+{
+  switch (VARIANT)
+  {
+    case 1:
+      dev_b = reduction_1(dev_a, dev_b);
+      break;
+    case 2:
+      dev_b = reduction_2(dev_a, dev_b);
+      break;
+    case 3:
+      dev_b = reduction_3(dev_a, dev_b);
+      break;
+    case 4:
+      dev_b = reduction_4(dev_a, dev_b);
+      break;
+    case 5:
+      dev_b = reduction_5(dev_a, dev_b);
+      break;
+    case 6:
+      dev_b = reduction_6<THREADS>(dev_a, dev_b);      
+      break;
+    default:
+      dev_b = reduction_1(dev_a, dev_b);
+      break;
+  }  
 }
 
 int checkResults(int *a)
