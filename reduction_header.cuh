@@ -2,8 +2,8 @@
 #define BLOCKS 4
 #define THREADS 32
 #define CUDASIZE 10
-//VARIANT is on of the 1-7 variants of CUDA reduction
-#define VARIANT 5
+//VARIANT is one of the 1-7 variants of CUDA reduction
+#define VARIANT 6
 
 extern void caller();
 extern void wrapper();
