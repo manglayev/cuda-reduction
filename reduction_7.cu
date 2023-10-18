@@ -2,16 +2,21 @@
 #include "device_launch_parameters.h"
 #include "cuda.h"
 #include "cuda_runtime.h"
-#include "reduction_warp.cu"
 
 template<unsigned int blockSize>
-__device__ int* reduction_6(int *g_idata, int *g_odata)
+__device__ int* reduction_7(int *g_idata, int *g_odata)
 {
     extern __shared__ int sdata[];
     // each thread loads one element from global to shared mem
     unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
-    sdata[tid] = g_idata[i] + g_idata[i+blockDim.x];
+    unsigned int i = blockIdx.x*(blockSize*2) + threadIdx.x;
+    unsigned int gridSize = blockSize*2*gridDim.x;
+    sdata[tid] = 0;
+    while (i < CUDASIZE)
+    {
+        sdata[tid] += g_idata[i] + g_idata[i+blockSize];
+        i += gridSize;
+    }
     __syncthreads();
     // do reduction in shared mem
     if (blockSize >= 512)

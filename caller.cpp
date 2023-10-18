@@ -1,7 +1,5 @@
 #include "reduction_header.cuh"
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+
 
 void caller()
 {

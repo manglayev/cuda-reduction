@@ -3,18 +3,13 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-#include <iostream>
-#include <utility>
-#include <type_traits>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "reduction_1.cu"
 #include "reduction_2.cu"
 #include "reduction_3.cu"
 #include "reduction_4.cu"
 #include "reduction_5.cu"
 #include "reduction_6.cu"
+#include "reduction_7.cu"
 
 __global__ void cuda_global(int *dev_a, int *dev_b)
 {
@@ -37,6 +32,9 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
       break;
     case 6:
       dev_b = reduction_6<THREADS>(dev_a, dev_b);      
+      break;
+    case 7:
+      dev_b = reduction_7<THREADS>(dev_a, dev_b);      
       break;
     default:
       dev_b = reduction_1(dev_a, dev_b);
