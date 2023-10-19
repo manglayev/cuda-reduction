@@ -3,6 +3,7 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
+#include "reduction_warp.cu"
 #include "reduction_1.cu"
 #include "reduction_2.cu"
 #include "reduction_3.cu"
@@ -42,6 +43,16 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
   }  
 }
 
+int* initArray()
+{
+  static int array[CUDASIZE];
+  for(int i = 0; i < CUDASIZE; i++)
+  {
+    array[i] = i;
+  }
+  return array;
+}
+
 int checkResults(int *a)
 {
   int sum = 0;
@@ -56,7 +67,7 @@ void wrapper()
 {
   printf("STAGE 3 WRAPPER START\n");
 
-  int a[CUDASIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int *a = initArray();   
   int b[1];
 
   int *dev_a;

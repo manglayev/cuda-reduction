@@ -7,10 +7,11 @@
 #define DIMS 1
 #define BLOCKS 4
 #define THREADS 32
-#define CUDASIZE 10
+#define CUDASIZE 33
 //VARIANT is one of the 1-7 variants of CUDA reduction
-#define VARIANT 7
+#define VARIANT 1
 
 extern void caller();
 extern void wrapper();
 extern int checkResults(int *a);
+extern int* initArray();

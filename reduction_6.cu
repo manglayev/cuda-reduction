@@ -2,7 +2,7 @@
 #include "device_launch_parameters.h"
 #include "cuda.h"
 #include "cuda_runtime.h"
-#include "reduction_warp.cu"
+
 
 template<unsigned int blockSize>
 __device__ int* reduction_6(int *g_idata, int *g_odata)
