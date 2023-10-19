@@ -7,7 +7,7 @@
 #define DIMS 1
 #define BLOCKS 4
 #define THREADS 32
-#define CUDASIZE 33
+#define CUDASIZE 32
 //VARIANT is one of the 1-7 variants of CUDA reduction
 #define VARIANT 1
 
