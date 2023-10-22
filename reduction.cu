@@ -48,7 +48,7 @@ int* initArray()
   static int array[CUDASIZE];
   for(int i = 0; i < CUDASIZE; i++)
   {
-    array[i] = i;
+    array[i] = 1;
   }
   return array;
 }
@@ -67,7 +67,7 @@ void wrapper()
 {
   printf("STAGE 3 WRAPPER START\n");
 
-  int *a = initArray();   
+  int *a = initArray();
   int b[1];
 
   int *dev_a;
@@ -80,7 +80,6 @@ void wrapper()
   cudaMemcpy(dev_b, b, sizeof(int), cudaMemcpyHostToDevice);
 
   cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-
   cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
   printf("GPU RESULTS: b = %d\n", b[0]);
   int sum = checkResults(a);

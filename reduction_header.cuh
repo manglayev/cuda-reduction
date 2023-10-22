@@ -5,11 +5,11 @@
 #include <stdlib.h>
 
 #define DIMS 1
-#define BLOCKS 4
-#define THREADS 32
-#define CUDASIZE 32
+#define BLOCKS 8
+#define THREADS 512
+#define CUDASIZE 4096
 //VARIANT is one of the 1-7 variants of CUDA reduction
-#define VARIANT 1
+#define VARIANT 2
 
 extern void caller();
 extern void wrapper();
