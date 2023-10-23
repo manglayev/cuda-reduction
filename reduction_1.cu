@@ -2,10 +2,7 @@
 #include "device_launch_parameters.h"
 #include "cuda.h"
 #include "cuda_runtime.h"
-/*
-The size of array must be equal to the multiplication of the number of threads to the number of blocks
-CUDASIZE = THREADS x BLOCKS
-*/
+
 __device__ int* reduction_1(int *g_idata, int *g_odata)
 {
   __shared__ int sdata[THREADS];

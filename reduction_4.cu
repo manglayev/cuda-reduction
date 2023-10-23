@@ -3,28 +3,38 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-__device__ int* reduction_4(int *g_idata, int *g_odata);
 __device__ int* reduction_4(int *g_idata, int *g_odata)
 {
-    extern __shared__ int sdata[];
+    __shared__ int sdata[THREADS];
     // each thread loads one element from global to shared mem
-    unsigned int tid = threadIdx.x;
     unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
-    sdata[tid] = g_idata[i] + g_idata[i+blockDim.x];
+    sdata[threadIdx.x] = g_idata[i] + g_idata[i+blockDim.x];
     __syncthreads();
     // do reduction in shared mem
-    for(unsigned int s=blockDim.x/2; s>0; s>>=1)
+    for(unsigned int s = blockDim.x/2; s>0; s>>=1)
     {
-        if (tid < s)
+        if (threadIdx.x < s)
         {
-          sdata[tid] += sdata[tid + s];
+          sdata[threadIdx.x] += sdata[threadIdx.x + s];
         }
         __syncthreads();
     }
     // write result for this block to global mem
-    if (tid == 0) 
+    if (threadIdx.x == 0) 
     {
         g_odata[blockIdx.x] = sdata[0];
+    }
+    for(unsigned int s = blockDim.x/2; s>0; s>>=1)
+    {
+        if (threadIdx.x < s)
+        {
+          g_odata[threadIdx.x] += g_odata[threadIdx.x + s];
+        }
+        __syncthreads();
+    }
+    if (threadIdx.x == 0) 
+    {
+        g_odata[blockIdx.x] = g_odata[0];
     }
     return g_odata;
 }
