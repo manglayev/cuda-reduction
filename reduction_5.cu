@@ -3,30 +3,34 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-__device__ int* reduction_5(int *g_idata, int *g_odata);
 __device__ void warpReduce(volatile int* sdata, int tid);
 __device__ int* reduction_5(int *g_idata, int *g_odata)
 {
-    extern __shared__ int sdata[];
-    // each thread loads one element from global to shared mem
-    unsigned int tid = threadIdx.x;
+    static __shared__ int sdata[THREADS];
+    // each thread loads one element from global to shared mem    
     unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
-    sdata[tid] = g_idata[i] + g_idata[i+blockDim.x];
+    sdata[threadIdx.x] = g_idata[i] + g_idata[i+blockDim.x];
     __syncthreads();
     // do reduction in shared mem
     for(unsigned int s = blockDim.x/2; s>32; s>>=1)
     {
-        if(tid < s)
+        if(threadIdx.x < s)
         {
-          sdata[tid] += sdata[tid + s];
+          sdata[threadIdx.x] += sdata[threadIdx.x + s];
         }
         __syncthreads();
     }
-    if (tid < 32) warpReduce(sdata, tid);
+    if (threadIdx.x < 32) warpReduce(sdata, threadIdx.x);
     // write result for this block to global mem
-    if (tid == 0) 
+    if (threadIdx.x == 0) 
     {
         g_odata[blockIdx.x] = sdata[0];
+    }
+    //implement second reduction for the summed array
+    if (threadIdx.x < 32) warpReduce(g_odata, threadIdx.x);
+    if (threadIdx.x == 0) 
+    {
+        g_odata[blockIdx.x] = g_odata[0];
     }
     return g_odata;
 }

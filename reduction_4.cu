@@ -24,6 +24,7 @@ __device__ int* reduction_4(int *g_idata, int *g_odata)
     {
         g_odata[blockIdx.x] = sdata[0];
     }
+    //implement second reduction for the summed array
     for(unsigned int s = blockDim.x/2; s>0; s>>=1)
     {
         if (threadIdx.x < s)
