@@ -32,7 +32,7 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
       dev_b = reduction_5(dev_a, dev_b);
       break;
     case 6:
-      dev_b = reduction_6<THREADS>(dev_a, dev_b);      
+      dev_b = reduction_6<THREADS>(dev_a, dev_b);
       break;
     case 7:
       dev_b = reduction_7<THREADS>(dev_a, dev_b);      

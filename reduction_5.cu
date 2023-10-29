@@ -27,10 +27,23 @@ __device__ int* reduction_5(int *g_idata, int *g_odata)
         g_odata[blockIdx.x] = sdata[0];
     }
     //implement second reduction for the summed array
-    if (threadIdx.x < 32) warpReduce(g_odata, threadIdx.x);
+    __syncthreads();
+    i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
+    sdata[threadIdx.x] = g_odata[i] + g_odata[i+blockDim.x];
+    __syncthreads();
+    for(unsigned int s = blockDim.x/2; s>32; s>>=1)
+    {
+        if(threadIdx.x < s)
+        {
+          sdata[threadIdx.x] += sdata[threadIdx.x + s];
+        }
+        __syncthreads();
+    }    
+    if (threadIdx.x < 32) warpReduce(sdata, threadIdx.x);
+    __syncthreads();
     if (threadIdx.x == 0) 
     {
-        g_odata[blockIdx.x] = g_odata[0];
+        g_odata[blockIdx.x] = sdata[0];
     }
     return g_odata;
 }
