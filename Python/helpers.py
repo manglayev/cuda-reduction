@@ -1,18 +1,8 @@
-import reduction_1
+import numpy as np
+import numba
 
-def initializeArray(CUDASIZE):
-    return [1] * CUDASIZE
+from numba import cuda
 
-def checkResults(array):
-    sum = 0
-    for element in array:
-        sum += element
-    return sum
-
-def callReduction[BLOCKS, THREADS](VARIANT, dev_a, dev_b):
-    if VARIANT == 1:
-        reduction_1.reduction_1(dev_a, dev_b)
-'''
-    if VARIANT == 7:
-        cuda_global[BLOCKS, THREADS](dev_a, dev_b)
-'''
+BLOCKS = 8
+THREADS = 512
+VARIANT = 1

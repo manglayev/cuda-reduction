@@ -1,26 +1,32 @@
-from numba import cuda, int32
+from helpers import *
 
-@cuda.jit
+@numba.cuda.jit
 def reduction_1(g_idata, g_odata):
-    sdata = cuda.shared.array(shape=THREADS, dtype=int32)
-    i = cuda.grid(1)
-    sdata[cuda.threadIdx.x] = g_idata[i]
-    cuda.syncthreads()
-    #do reduction in shared mem
+    sdata = numba.cuda.shared.array(shape=THREADS, dtype=numba.int32)
+    i = numba.cuda.grid(1)
+    sdata[numba.cuda.threadIdx.x] = g_idata[i]
+    numba.cuda.syncthreads()
+    #do reduction in shared memory
     s = 1
-    for s in range(1, cuda.blockDim.x, s*2):
-        if cuda.threadIdx.x % (2*s) == 0:
-          sdata[cuda.threadIdx.x] += sdata[cuda.threadIdx.x + s]
-        cuda.syncthreads()
-    # write result for this block to global mem
-    if cuda.threadIdx.x == 0:
-        g_odata[cuda.blockIdx.x] = sdata[0]
+    while s < numba.cuda.blockDim.x:
+        if numba.cuda.threadIdx.x % (2*s) == 0:
+            sdata[numba.cuda.threadIdx.x] += sdata[numba.cuda.threadIdx.x + s]
+        numba.cuda.syncthreads()
+        s*=2
+    numba.cuda.syncthreads()
+    # write result for this block to global memory
+    if numba.cuda.threadIdx.x == 0:
+        g_odata[numba.cuda.blockIdx.x] = sdata[0]
     #implement second reduction for the summed array
+    numba.cuda.syncthreads()
     s = 1
-    for s in range(1, cuda.blockDim.x, s*2):
-        if cuda.threadIdx.x % (2*s) == 0:
-            g_odata[cuda.threadIdx.x] += g_odata[cuda.threadIdx.x + s];
-        cuda.syncthreads();
-    #write result for this block to global mem
-    if cuda.threadIdx.x == 0:
-        g_odata[cuda.blockIdx.x] = g_odata[0];
+    while s < numba.cuda.blockDim.x:
+        if numba.cuda.threadIdx.x % (2*s) == 0:
+            g_odata[cuda.threadIdx.x] += g_odata[numba.cuda.threadIdx.x + s]
+        numba.cuda.syncthreads()
+        s*=2
+    numba.cuda.syncthreads()
+    #write result for this block to global memory
+    if numba.cuda.threadIdx.x == 0:
+        g_odata[numba.cuda.blockIdx.x] = g_odata[0];
+    numba.cuda.syncthreads()
