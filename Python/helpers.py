@@ -5,4 +5,4 @@ from numba import cuda
 
 BLOCKS = 8
 THREADS = 512
-VARIANT = 3
+VARIANT = 4
