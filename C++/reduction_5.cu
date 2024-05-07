@@ -7,7 +7,7 @@ __device__ void warpReduce(volatile int* sdata, int tid);
 __device__ int* reduction_5(int *g_idata, int *g_odata)
 {
     static __shared__ int sdata[THREADS];
-    // each thread loads one element from global to shared mem    
+    // each thread loads one element from global to shared mem
     unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
     sdata[threadIdx.x] = g_idata[i] + g_idata[i+blockDim.x];
     __syncthreads();
@@ -22,7 +22,7 @@ __device__ int* reduction_5(int *g_idata, int *g_odata)
     }
     if (threadIdx.x < 32) warpReduce(sdata, threadIdx.x);
     // write result for this block to global mem
-    if (threadIdx.x == 0) 
+    if (threadIdx.x == 0)
     {
         g_odata[blockIdx.x] = sdata[0];
     }
@@ -38,10 +38,10 @@ __device__ int* reduction_5(int *g_idata, int *g_odata)
           sdata[threadIdx.x] += sdata[threadIdx.x + s];
         }
         __syncthreads();
-    }    
+    }
     if (threadIdx.x < 32) warpReduce(sdata, threadIdx.x);
     __syncthreads();
-    if (threadIdx.x == 0) 
+    if (threadIdx.x == 0)
     {
         g_odata[blockIdx.x] = sdata[0];
     }

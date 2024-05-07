@@ -44,8 +44,8 @@ __device__ int* reduction_6(int *g_idata, int *g_odata)
     {
         g_odata[blockIdx.x] = sdata[0];
     }
-    //implement second reduction for the summed array
     __syncthreads();
+    //implement second reduction for the summed array
     i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
     sdata[threadIdx.x] = g_odata[i] + g_odata[i+blockDim.x];
     __syncthreads();
@@ -79,7 +79,7 @@ __device__ int* reduction_6(int *g_idata, int *g_odata)
     if (threadIdx.x == 0)
     {
         g_odata[blockIdx.x] = sdata[0];
-    } 
-       
+    }
+
     return g_odata;
 }
