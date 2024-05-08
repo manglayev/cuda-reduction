@@ -1,13 +1,5 @@
 from helpers import *
-
-@numba.cuda.jit
-def warpReduce(sdata, tid):
-    sdata[tid] += sdata[tid + 32]
-    sdata[tid] += sdata[tid + 16]
-    sdata[tid] += sdata[tid + 8]
-    sdata[tid] += sdata[tid + 4]
-    sdata[tid] += sdata[tid + 2]
-    sdata[tid] += sdata[tid + 1]
+from reduction_warp import *
 
 @numba.cuda.jit
 def reduction_5(g_idata, g_odata):
@@ -24,7 +16,7 @@ def reduction_5(g_idata, g_odata):
         s >>= 1
     numba.cuda.syncthreads()
     if numba.cuda.threadIdx.x < 32:
-        warpReduce(sdata, numba.cuda.threadIdx.x)
+        reduction_warp(sdata, numba.cuda.threadIdx.x)
     # write result for this block to global memory
     if numba.cuda.threadIdx.x == 0:
         g_odata[numba.cuda.blockIdx.x] = sdata[0]
@@ -41,7 +33,7 @@ def reduction_5(g_idata, g_odata):
         s >>= 1
     numba.cuda.syncthreads()
     if numba.cuda.threadIdx.x < 32:
-        warpReduce(sdata, numba.cuda.threadIdx.x)
+        reduction_warp(sdata, numba.cuda.threadIdx.x)
     numba.cuda.syncthreads()
     #write result for this block to global memory
     if numba.cuda.threadIdx.x == 0:
