@@ -5,4 +5,5 @@ from numba import cuda
 
 BLOCKS = 8
 THREADS = 512
-VARIANT = 6
+CUDASIZE = BLOCKS * THREADS
+VARIANT = 7

@@ -5,6 +5,7 @@ from reduction_3 import *
 from reduction_4 import *
 from reduction_5 import *
 from reduction_6 import *
+from reduction_7 import *
 
 def callReduction(a, b):
     dev_a = cuda.to_device(a)
@@ -22,7 +23,8 @@ def callReduction(a, b):
         reduction_5[BLOCKS, THREADS](dev_a, dev_b)
     if VARIANT == 6:
         reduction_6[BLOCKS, THREADS](dev_a, dev_b)
-
+    if VARIANT == 7:
+        reduction_7[BLOCKS, THREADS](dev_a, dev_b)
     sum = dev_b.copy_to_host()
     return sum
 
