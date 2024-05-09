@@ -7,6 +7,8 @@ from reduction_5 import *
 from reduction_6 import *
 from reduction_7 import *
 
+import timeit
+
 def callReduction(a, b):
     dev_a = cuda.to_device(a)
     dev_b = cuda.to_device(b)
@@ -32,7 +34,8 @@ if __name__ == "__main__":
     print("VARIANT: ", VARIANT)
     a = np.ones(BLOCKS*THREADS, dtype=np.int32)
     b = np.ones(1, dtype=np.int32)
+    start = timeit.default_timer()
     b = callReduction(a, b)
-    print("GPU RESULTS: ", b[0])
+    print("GPU RESULTS: VARIANT =", VARIANT, "; b = ",b[0],"; elapsed time: ",str(round(timeit.default_timer() - start, 5)),"ms")
     sum = np.sum(a)
-    print("CPU RESULTS: ", sum)
+    print("CPU RESULTS:", sum)
