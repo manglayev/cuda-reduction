@@ -35,12 +35,12 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
       dev_b = reduction_6<THREADS>(dev_a, dev_b);
       break;
     case 7:
-      dev_b = reduction_7<THREADS>(dev_a, dev_b);      
+      dev_b = reduction_7<THREADS>(dev_a, dev_b);
       break;
     default:
       dev_b = reduction_1(dev_a, dev_b);
       break;
-  }  
+  }
 }
 
 int* initArray()
@@ -67,6 +67,11 @@ void wrapper()
 {
   printf("STAGE 3 WRAPPER START\n");
 
+  cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0);
+
   int *a = initArray();
   int b[1];
 
@@ -81,10 +86,13 @@ void wrapper()
 
   cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
   cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
-  printf("GPU RESULTS: b = %d\n", b[0]);
+  cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	float elapsedTime;
+	cudaEventElapsedTime(&elapsedTime, start, stop);
+  printf("GPU RESULTS: VARIANT = %d; b = %d; elapsed time: %.5f ms; \n", VARIANT, b[0], elapsedTime);
   int sum = checkResults(a);
   printf("CPU RESULTS: sum = %d\n", sum);
-
   cudaFree(dev_a);
   cudaFree(dev_b);
   printf("STAGE 3 WRAPPER END\n");
