@@ -31,7 +31,10 @@ def callReduction(a, b):
     return sum
 
 if __name__ == "__main__":
-    print("VARIANT: ", VARIANT)
+    print("  --- General information for device START ---\n")
+    #cuda.select_device(0)
+    print("Name:",cuda.cudadrv.driver.Device(0).name)
+    print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
     a = np.ones(BLOCKS*THREADS, dtype=np.int32)
     b = np.ones(1, dtype=np.int32)
     start = timeit.default_timer()
