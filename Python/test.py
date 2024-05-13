@@ -1,3 +1,4 @@
+import numba
 from numba.cuda.cudadrv import enums
 from numba import cuda
 
@@ -8,11 +9,15 @@ def test():
     #    print(attribute, '=', getattr(device, attribute))
     #print("Name:",cuda.cudadrv.driver.Device(0).name)
     #print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
+    #print("Name:",cuda.cudadrv.driver.Device(0).name)
+    #print("Total global memory:", getattr(device, "TOTAL_GLOBAL_MEMORY"))
+    #numba.cuda.cudadrv.driver.Context(device, handle).get_memory_info()
+
     print("  --- General information for device START ---");
     print("Name:",cuda.cudadrv.driver.Device(0).name)
     print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
     print("Clock rate:", getattr(device, "CLOCK_RATE"))
-    #print("Total global memory:", getattr(device, "TOTAL_GLOBAL_MEMORY"))
+    print("Total global memory:", numba.cuda.cudadrv.devices.get_context(0).get_memory_info()[1])
     print("Total constant memory:", getattr(device, "TOTAL_CONSTANT_MEMORY"))
     print("Multiprocessor count:", getattr(device, "MULTIPROCESSOR_COUNT"))
     print("Shared memory per block:", getattr(device, "MAX_SHARED_MEMORY_PER_BLOCK"))

@@ -41,7 +41,7 @@ if __name__ == "__main__":
     print("Name:",cuda.cudadrv.driver.Device(0).name)
     print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
     print("Clock rate:", getattr(device, "CLOCK_RATE"))
-    #print("Total global memory:", getattr(device, "TOTAL_GLOBAL_MEMORY"))
+    print("Total global memory:", numba.cuda.cudadrv.devices.get_context(0).get_memory_info()[1])
     print("Total constant memory:", getattr(device, "TOTAL_CONSTANT_MEMORY"))
     print("Multiprocessor count:", getattr(device, "MULTIPROCESSOR_COUNT"))
     print("Shared memory per block:", getattr(device, "MAX_SHARED_MEMORY_PER_BLOCK"))
@@ -59,4 +59,3 @@ if __name__ == "__main__":
     print("GPU RESULTS: VARIANT =", VARIANT, "; b = ",b[0],"; elapsed time: ",str(round(timeit.default_timer() - start, 5)),"ms")
     sum = np.sum(a)
     print("CPU RESULTS:", sum)
-    
