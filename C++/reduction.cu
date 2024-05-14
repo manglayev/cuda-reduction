@@ -106,7 +106,8 @@ void wrapper()
 	cudaEventSynchronize(stop);
 	float elapsedTime;
 	cudaEventElapsedTime(&elapsedTime, start, stop);
-  printf("GPU RESULTS: VARIANT = %d; b = %d; elapsed time: %.5f ms; \n", VARIANT, b[0], elapsedTime);
+  printf("GPU RESULTS: VARIANT = %d; elapsed time: %.5f ms; \n", VARIANT, elapsedTime);
+  printf("GPU RESULTS: sum = %d; \n", b[0]);
   int sum = checkResults(a);
   printf("CPU RESULTS: sum = %d\n", sum);
   cudaFree(dev_a);

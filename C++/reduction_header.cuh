@@ -9,9 +9,9 @@ The size of array must be equal to the multiplication of the number of threads t
 CUDASIZE = THREADS x BLOCKS
 */
 #define DIMS 1
-#define BLOCKS 8
-#define THREADS 512
-#define CUDASIZE 4096
+#define BLOCKS 16
+#define THREADS 1024
+#define CUDASIZE 16384
 //VARIANT is one of the 1-7 variants of CUDA reduction
 #define VARIANT 1
 
