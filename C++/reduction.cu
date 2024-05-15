@@ -5,6 +5,8 @@
 
 #include "reduction_warp.cu"
 #include "reduction_1.cu"
+#include "reduction_10.cu"
+
 #include "reduction_2.cu"
 #include "reduction_3.cu"
 #include "reduction_4.cu"
@@ -17,7 +19,8 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
   switch (VARIANT)
   {
     case 1:
-      dev_b = reduction_1(dev_a, dev_b);
+      //dev_b = reduction_1(dev_a, dev_b);
+      dev_b = reduction_10(dev_a, dev_b);
       break;
     case 2:
       dev_b = reduction_2(dev_a, dev_b);
@@ -89,25 +92,30 @@ void wrapper()
 	cudaEventRecord(start, 0);
 
   int *a = initArray();
-  int b[1];
+  int b[BLOCKS];
 
   int *dev_a;
   int *dev_b;
 
   cudaMalloc((void**)&dev_a, CUDASIZE*sizeof(int));
-  cudaMalloc((void**)&dev_b, sizeof(int));
+  cudaMalloc((void**)&dev_b, BLOCKS*sizeof(int));
 
   cudaMemcpy(dev_a, a, CUDASIZE*sizeof(int), cudaMemcpyHostToDevice);
-  cudaMemcpy(dev_b, b, sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_b, b, BLOCKS*sizeof(int), cudaMemcpyHostToDevice);
 
   cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-  cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
+  switch(VARIANT)
+  {
+    case 1:cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
+    break;
+  }
+  cudaMemcpy(b, dev_b, BLOCKS*sizeof(int), cudaMemcpyDeviceToHost);
   cudaEventRecord(stop, 0);
 	cudaEventSynchronize(stop);
 	float elapsedTime;
 	cudaEventElapsedTime(&elapsedTime, start, stop);
   printf("GPU RESULTS: VARIANT = %d; elapsed time: %.5f ms; \n", VARIANT, elapsedTime);
-  printf("GPU RESULTS: sum = %d; \n", b[0]);
+  printf("GPU RESULTS: sum = %d \n", b[0]);
   int sum = checkResults(a);
   printf("CPU RESULTS: sum = %d\n", sum);
   cudaFree(dev_a);
