@@ -5,14 +5,17 @@
 
 #include "reduction_warp.cu"
 #include "reduction_1.cu"
-#include "reduction_10.cu"
-
 #include "reduction_2.cu"
 #include "reduction_3.cu"
 #include "reduction_4.cu"
 #include "reduction_5.cu"
 #include "reduction_6.cu"
 #include "reduction_7.cu"
+
+#include "reduction_10.cu"
+#include "reduction_20.cu"
+#include "reduction_30.cu"
+#include "reduction_40.cu"
 
 __global__ void cuda_global(int *dev_a, int *dev_b)
 {
@@ -23,13 +26,16 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
       dev_b = reduction_10(dev_a, dev_b);
       break;
     case 2:
-      dev_b = reduction_2(dev_a, dev_b);
+      //dev_b = reduction_2(dev_a, dev_b);
+      dev_b = reduction_20(dev_a, dev_b);
       break;
     case 3:
-      dev_b = reduction_3(dev_a, dev_b);
+      //dev_b = reduction_3(dev_a, dev_b);
+      dev_b = reduction_30(dev_a, dev_b);
       break;
     case 4:
-      dev_b = reduction_4(dev_a, dev_b);
+      //dev_b = reduction_4(dev_a, dev_b);
+      dev_b = reduction_40(dev_a, dev_b);
       break;
     case 5:
       dev_b = reduction_5(dev_a, dev_b);
@@ -69,8 +75,8 @@ int checkResults(int *a)
 void wrapper()
 {
   printf("STAGE 3 WRAPPER START\n");
+  /*
   cudaDeviceProp device;
-  //cudaGetDeviceCount(&count);
   cudaGetDeviceProperties(&device, 0);
   printf("  --- General information for device START ---\n");
   printf("Name: %s;\n", device.name);
@@ -86,6 +92,7 @@ void wrapper()
   printf("Max thread dimensions: (%d, %d, %d)\n", device.maxThreadsDim[0], device.maxThreadsDim[1], device.maxThreadsDim[2]);
   printf("Max grid dimensions: (%d, %d, %d)\n", device.maxGridSize[0], device.maxGridSize[1], device.maxGridSize[2]);
   printf("  --- General information for device END ---\n");
+  */
   cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
@@ -107,6 +114,12 @@ void wrapper()
   switch(VARIANT)
   {
     case 1:cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
+    break;
+    case 2:cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
+    break;
+    case 3:cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
+    break;
+    case 4:cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
     break;
   }
   cudaMemcpy(b, dev_b, BLOCKS*sizeof(int), cudaMemcpyDeviceToHost);

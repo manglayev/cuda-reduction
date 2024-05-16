@@ -3,20 +3,20 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-__device__ int* reduction_10(int *g_idata, int *g_odata)
+__device__ int* reduction_20(int *g_idata, int *g_odata)
 {
   __shared__ int sdata[THREADS];
-  //each thread loads one element from global to shared mem
-  //unsigned int tid = threadIdx.x;
-  unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+  // each thread loads one element from global to shared mem
+  unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
   sdata[threadIdx.x] = g_idata[i];
   __syncthreads();
   // do reduction in shared mem
   for(unsigned int s = 1; s < blockDim.x; s *= 2)
   {
-    if (threadIdx.x % (2*s) == 0)
+    int index = 2 * s * threadIdx.x;
+    if (index < blockDim.x)
     {
-      sdata[threadIdx.x] += sdata[threadIdx.x + s];
+      sdata[index] += sdata[index + s];
     }
     __syncthreads();
   }
