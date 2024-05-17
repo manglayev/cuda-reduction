@@ -20,7 +20,7 @@ __device__ int* reduction_4(int *g_idata, int *g_odata)
         __syncthreads();
     }
     // write result for this block to global mem
-    if (threadIdx.x == 0) 
+    if (threadIdx.x == 0)
     {
         g_odata[blockIdx.x] = sdata[0];
     }
@@ -37,9 +37,10 @@ __device__ int* reduction_4(int *g_idata, int *g_odata)
         }
         __syncthreads();
     }
-    if (threadIdx.x == 0) 
+    if (threadIdx.x == 0)
     {
         g_odata[blockIdx.x] = sdata[0];
     }
+    __syncthreads();
     return g_odata;
 }
