@@ -15,8 +15,7 @@
 #include "reduction_10.cu"
 #include "reduction_20.cu"
 #include "reduction_30.cu"
-#include "reduction_41.cu"
-#include "reduction_42.cu"
+#include "reduction_40.cu"
 #include "reduction_50.cu"
 
 __global__ void cuda_global(int *dev_a, int *dev_b)
