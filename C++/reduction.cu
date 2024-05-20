@@ -8,7 +8,7 @@
 #include "reduction_2.cu"
 #include "reduction_3.cu"
 #include "reduction_4.cu"
-#include "reduction_5.cu"
+//#include "reduction_5.cu"
 #include "reduction_6.cu"
 #include "reduction_7.cu"
 
@@ -17,6 +17,7 @@
 #include "reduction_30.cu"
 #include "reduction_41.cu"
 #include "reduction_42.cu"
+#include "reduction_50.cu"
 
 __global__ void cuda_global(int *dev_a, int *dev_b)
 {
@@ -42,7 +43,11 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
         dev_b = reduction_42(dev_a, dev_b);
       break;
     case 5:
-      dev_b = reduction_5(dev_a, dev_b);
+      //dev_b = reduction_5(dev_a, dev_b);
+      if(blockDim.x == THREADS)
+        dev_b = reduction_51(dev_a, dev_b);
+      if(blockDim.x == BLOCKS/4)
+        dev_b = reduction_52(dev_a, dev_b);
       break;
     case 6:
       dev_b = reduction_6<THREADS>(dev_a, dev_b);
@@ -146,6 +151,12 @@ void wrapper()
       break;
     }
     case 4:
+    {
+      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
+      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
+      break;
+    }
+    case 5:
     {
       cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
       cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
