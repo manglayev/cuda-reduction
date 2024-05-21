@@ -43,7 +43,12 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
         dev_b = reduction_52(dev_a, dev_b);
       break;
     case 6:
-      dev_b = reduction_6<THREADS>(dev_a, dev_b);
+      //dev_b = reduction_6<THREADS>(dev_a, dev_b);
+      if(blockDim.x == THREADS)
+        dev_b = reduction_61<THREADS>(dev_a, dev_b);
+      else
+      //if(blockDim.x == BLOCKS/4)
+        dev_b = reduction_62<BLOCKS/2>(dev_a, dev_b);
       break;
     case 7:
       dev_b = reduction_7<THREADS>(dev_a, dev_b);
@@ -118,11 +123,10 @@ void wrapper()
   else
   {
     //cudaMalloc((void**)&dev_b, sizeof(int));
-    cudaMalloc((void**)&dev_b, BLOCKS/2*sizeof(int));
+    cudaMalloc((void**)&dev_b, (BLOCKS/2)*sizeof(int));
     //cudaMemcpy(dev_b, b, sizeof(int), cudaMemcpyHostToDevice);
     //cudaMemcpy(dev_b, b, BLOCKS/2*sizeof(int), cudaMemcpyHostToDevice);
   }
-
   switch(VARIANT)
   {
     case 1:
@@ -150,6 +154,12 @@ void wrapper()
       break;
     }
     case 5:
+    {
+      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
+      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
+      break;
+    }
+    case 6:
     {
       cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
       cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);

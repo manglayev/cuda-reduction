@@ -3,7 +3,6 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-__device__ void warpReduce(volatile int* sdata, int tid);
 __device__ int* reduction_5(int *g_idata, int *g_odata)
 {
     static __shared__ int sdata[THREADS];
@@ -97,14 +96,4 @@ __device__ int* reduction_52(int *g_idata, int *g_odata)
     }
     __syncthreads();
     return g_odata;
-}
-
-__device__ void warpReduce(volatile int* sdata, int tid)
-{
-    sdata[tid] += sdata[tid + 32];
-    sdata[tid] += sdata[tid + 16];
-    sdata[tid] += sdata[tid + 8];
-    sdata[tid] += sdata[tid + 4];
-    sdata[tid] += sdata[tid + 2];
-    sdata[tid] += sdata[tid + 1];
 }
