@@ -46,9 +46,8 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
       //dev_b = reduction_6<THREADS>(dev_a, dev_b);
       if(blockDim.x == THREADS)
         dev_b = reduction_61<THREADS>(dev_a, dev_b);
-      else
-      //if(blockDim.x == BLOCKS/4)
-        dev_b = reduction_62<BLOCKS/2>(dev_a, dev_b);
+      if(blockDim.x == BLOCKS/4)
+        dev_b = reduction_62<BLOCKS/4>(dev_a, dev_b);
       break;
     case 7:
       dev_b = reduction_7<THREADS>(dev_a, dev_b);
