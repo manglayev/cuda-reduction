@@ -50,7 +50,11 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
         dev_b = reduction_62<BLOCKS/4>(dev_a, dev_b);
       break;
     case 7:
-      dev_b = reduction_7<THREADS>(dev_a, dev_b);
+      //dev_b = reduction_7<THREADS>(dev_a, dev_b);
+      if(blockDim.x == THREADS)
+        dev_b = reduction_71<THREADS>(dev_a, dev_b);
+      if(blockDim.x == BLOCKS/4)
+        dev_b = reduction_72<BLOCKS/4>(dev_a, dev_b);
       break;
     default:
       dev_b = reduction_1(dev_a, dev_b);
@@ -159,6 +163,12 @@ void wrapper()
       break;
     }
     case 6:
+    {
+      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
+      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
+      break;
+    }
+    case 7:
     {
       cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
       cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
