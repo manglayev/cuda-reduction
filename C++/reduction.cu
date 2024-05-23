@@ -57,7 +57,7 @@ __global__ void cuda_global(int *dev_a, int *dev_b)
         dev_b = reduction_72<BLOCKS/4>(dev_a, dev_b);
       break;
     default:
-      dev_b = reduction_1(dev_a, dev_b);
+      dev_b = reduction_10(dev_a, dev_b);
       break;
   }
 }
@@ -85,7 +85,7 @@ int checkResults(int *a)
 void wrapper()
 {
   printf("STAGE 3 WRAPPER START\n");
-  /*
+  
   cudaDeviceProp device;
   cudaGetDeviceProperties(&device, 0);
   printf("  --- General information for device START ---\n");
@@ -102,7 +102,7 @@ void wrapper()
   printf("Max thread dimensions: (%d, %d, %d)\n", device.maxThreadsDim[0], device.maxThreadsDim[1], device.maxThreadsDim[2]);
   printf("Max grid dimensions: (%d, %d, %d)\n", device.maxGridSize[0], device.maxGridSize[1], device.maxGridSize[2]);
   printf("  --- General information for device END ---\n");
-  */
+
   cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
@@ -118,71 +118,16 @@ void wrapper()
 
   if(VARIANT < 4)
   {
-    //cudaMalloc((void**)&dev_b, sizeof(int));
     cudaMalloc((void**)&dev_b, BLOCKS*sizeof(int));
-    //cudaMemcpy(dev_b, b, sizeof(int), cudaMemcpyHostToDevice);
-    //cudaMemcpy(dev_b, b, BLOCKS*sizeof(int), cudaMemcpyHostToDevice);
+    cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
+    cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
   }
   else
   {
-    //cudaMalloc((void**)&dev_b, sizeof(int));
     cudaMalloc((void**)&dev_b, (BLOCKS/2)*sizeof(int));
-    //cudaMemcpy(dev_b, b, sizeof(int), cudaMemcpyHostToDevice);
-    //cudaMemcpy(dev_b, b, BLOCKS/2*sizeof(int), cudaMemcpyHostToDevice);
+    cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
+    cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
   }
-  switch(VARIANT)
-  {
-    case 1:
-    {
-      cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
-      break;
-    }
-    case 2:
-    {
-      cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
-      break;
-    }
-    case 3:
-    {
-      cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
-      break;
-    }
-    case 4:
-    {
-      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
-      break;
-    }
-    case 5:
-    {
-      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
-      break;
-    }
-    case 6:
-    {
-      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
-      break;
-    }
-    case 7:
-    {
-      cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
-      break;
-    }
-    default:
-    {
-      cuda_global<<<BLOCKS, THREADS>>>(dev_a, dev_b);
-      cuda_global<<<1, BLOCKS>>>(dev_b, dev_b);
-      break;
-    }
-  }
-
-  //cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
   cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
   cudaEventRecord(stop, 0);
 	cudaEventSynchronize(stop);
