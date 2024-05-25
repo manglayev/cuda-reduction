@@ -14,7 +14,9 @@ def callReduction(a, b):
     dev_b = cuda.to_device(b)
 
     if VARIANT == 1:
-        reduction_1[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_1[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_10[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_10[1, BLOCKS](dev_b, dev_b)
     if VARIANT == 2:
         reduction_2[BLOCKS, THREADS](dev_a, dev_b)
     if VARIANT == 3:

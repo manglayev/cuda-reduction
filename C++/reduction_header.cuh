@@ -20,7 +20,7 @@ CUDASIZE = THREADS x BLOCKS
 #define CUDASIZE 1048576
 
 //VARIANT is one of the 1-7 variants of CUDA reduction
-#define VARIANT 7
+#define VARIANT 1
 
 extern void caller();
 extern void wrapper();
