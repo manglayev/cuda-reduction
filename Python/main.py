@@ -18,7 +18,9 @@ def callReduction(a, b):
         reduction_10[BLOCKS, THREADS](dev_a, dev_b)
         reduction_10[1, BLOCKS](dev_b, dev_b)
     if VARIANT == 2:
-        reduction_2[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_2[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_20[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_20[1, BLOCKS](dev_b, dev_b)
     if VARIANT == 3:
         reduction_3[BLOCKS, THREADS](dev_a, dev_b)
     if VARIANT == 4:
