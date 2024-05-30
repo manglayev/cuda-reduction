@@ -26,7 +26,9 @@ def callReduction(a, b):
         reduction_30[BLOCKS, THREADS](dev_a, dev_b)
         reduction_30[1, BLOCKS](dev_b, dev_b)
     if VARIANT == 4:
-        reduction_4[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_4[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_41[int(BLOCKS/2), THREADS](dev_a, dev_b)
+        reduction_42[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 5:
         reduction_5[BLOCKS, THREADS](dev_a, dev_b)
     if VARIANT == 6:
@@ -37,12 +39,14 @@ def callReduction(a, b):
     return sum
 
 if __name__ == "__main__":
+
     device = cuda.get_current_device()
     #attributes = [name.replace("CU_DEVICE_ATTRIBUTE_", "") for name in dir(enums) if name.startswith("CU_DEVICE_ATTRIBUTE_")]
     #for attribute in attributes:
     #    print(attribute, '=', getattr(device, attribute))
     #print("Name:",cuda.cudadrv.driver.Device(0).name)
     #print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
+    '''
     print("  --- General information for device START ---");
     print("Name:",cuda.cudadrv.driver.Device(0).name)
     print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
@@ -57,7 +61,7 @@ if __name__ == "__main__":
     print("Max thread dimensions:(", getattr(device, "MAX_BLOCK_DIM_X"), getattr(device, "MAX_BLOCK_DIM_Y"), getattr(device, "MAX_BLOCK_DIM_Z"),")");
     print("Max grid dimensions:(", getattr(device, "MAX_GRID_DIM_X"), getattr(device, "MAX_GRID_DIM_Y"), getattr(device, "MAX_GRID_DIM_Z"),")");
     print("  --- General information for device END ---")
-
+    '''
     a = np.ones(BLOCKS*THREADS, dtype=np.int32)
     b = np.ones(1, dtype=np.int32)
     start = timeit.default_timer()
@@ -65,3 +69,9 @@ if __name__ == "__main__":
     print("GPU RESULTS: VARIANT =", VARIANT, "; b = ",b[0],"; elapsed time: ",str(round(timeit.default_timer() - start, 5)),"ms")
     sum = np.sum(a)
     print("CPU RESULTS:", sum)
+    '''
+    print(type(BLOCKS))
+    print(type(int(BLOCKS/4, dtype=32)))
+    print(type(BLOCKS/4))
+    print(type(numba.int32(BLOCKS/4)))
+    '''
