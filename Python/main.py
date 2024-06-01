@@ -30,7 +30,9 @@ def callReduction(a, b):
         reduction_41[int(BLOCKS/2), THREADS](dev_a, dev_b)
         reduction_42[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 5:
-        reduction_5[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_5[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_51[int(BLOCKS/2), THREADS](dev_a, dev_b)
+        reduction_52[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 6:
         reduction_6[BLOCKS, THREADS](dev_a, dev_b)
     if VARIANT == 7:
