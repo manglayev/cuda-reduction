@@ -34,7 +34,9 @@ def callReduction(a, b):
         reduction_51[int(BLOCKS/2), THREADS](dev_a, dev_b)
         reduction_52[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 6:
-        reduction_6[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_6[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_61[int(BLOCKS/2), THREADS](dev_a, dev_b)
+        reduction_62[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 7:
         reduction_7[BLOCKS, THREADS](dev_a, dev_b)
     sum = dev_b.copy_to_host()
@@ -64,14 +66,18 @@ if __name__ == "__main__":
     print("Max grid dimensions:(", getattr(device, "MAX_GRID_DIM_X"), getattr(device, "MAX_GRID_DIM_Y"), getattr(device, "MAX_GRID_DIM_Z"),")");
     print("  --- General information for device END ---")
     '''
+    print("VARIANT: ", VARIANT)
+    #print("elapsed time: ", str(round(timeit.default_timer() - start, 5)),"ms")
     a = np.ones(BLOCKS*THREADS, dtype=np.int32)
     b = np.ones(1, dtype=np.int32)
     start = timeit.default_timer()
     b = callReduction(a, b)
-    print("GPU RESULTS: VARIANT =", VARIANT, "; b = ",b[0],"; elapsed time: ",str(round(timeit.default_timer() - start, 5)),"ms")
+    #print("GPU RESULTS: VARIANT =", VARIANT, "; b = ",b[0],"; elapsed time: ",str(round(timeit.default_timer() - start, 5)),"ms")
+    print("GPU RESULTS:", b[0])
     sum = np.sum(a)
     print("CPU RESULTS:", sum)
     '''
+    print(a.shape[0])
     print(type(BLOCKS))
     print(type(int(BLOCKS/4, dtype=32)))
     print(type(BLOCKS/4))

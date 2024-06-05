@@ -115,7 +115,9 @@ void wrapper()
 
   cudaMalloc((void**)&dev_a, CUDASIZE*sizeof(int));
   cudaMemcpy(dev_a, a, CUDASIZE*sizeof(int), cudaMemcpyHostToDevice);
+
   /*
+  working on adding dim3
   if (VARIANT == 1)
   {
     //dim3 grid(BLOCKS, THREADS);
@@ -137,7 +139,7 @@ void wrapper()
     cuda_global<<<BLOCKS/2, THREADS>>>(dev_a, dev_b);
     cuda_global<<<1, BLOCKS/4>>>(dev_b, dev_b);
   }
-  
+
   cudaMemcpy(b, dev_b, sizeof(int), cudaMemcpyDeviceToHost);
   cudaEventRecord(stop, 0);
 	cudaEventSynchronize(stop);

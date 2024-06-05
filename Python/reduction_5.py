@@ -63,7 +63,7 @@ def reduction_51(g_idata, g_odata):
 
 @numba.cuda.jit
 def reduction_52(g_idata, g_odata):
-    sdata = numba.cuda.shared.array(shape=THREADS, dtype=numba.int32)
+    sdata = numba.cuda.shared.array(shape=BLOCKS_TO_FOUR, dtype=numba.int32)
     i = numba.cuda.blockIdx.x * (numba.cuda.blockDim.x*2) + numba.cuda.threadIdx.x;
     sdata[numba.cuda.threadIdx.x] = g_idata[i] + g_idata[i+numba.cuda.blockDim.x]
     numba.cuda.syncthreads()
