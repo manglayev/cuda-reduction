@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #    print(attribute, '=', getattr(device, attribute))
     #print("Name:",cuda.cudadrv.driver.Device(0).name)
     #print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
-    '''
+    
     print("  --- General information for device START ---");
     print("Name:",cuda.cudadrv.driver.Device(0).name)
     print("Compute capability:",cuda.cudadrv.driver.Device(0).compute_capability)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     print("Max thread dimensions:(", getattr(device, "MAX_BLOCK_DIM_X"), getattr(device, "MAX_BLOCK_DIM_Y"), getattr(device, "MAX_BLOCK_DIM_Z"),")");
     print("Max grid dimensions:(", getattr(device, "MAX_GRID_DIM_X"), getattr(device, "MAX_GRID_DIM_Y"), getattr(device, "MAX_GRID_DIM_Z"),")");
     print("  --- General information for device END ---")
-    '''
+
     print("VARIANT: ", VARIANT)
     #print("elapsed time: ", str(round(timeit.default_timer() - start, 5)),"ms")
     a = np.ones(BLOCKS*THREADS, dtype=np.int32)
