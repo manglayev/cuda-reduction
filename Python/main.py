@@ -38,7 +38,9 @@ def callReduction(a, b):
         reduction_61[int(BLOCKS/2), THREADS](dev_a, dev_b)
         reduction_62[1, int(BLOCKS/4)](dev_b, dev_b)
     if VARIANT == 7:
-        reduction_7[BLOCKS, THREADS](dev_a, dev_b)
+        #reduction_7[BLOCKS, THREADS](dev_a, dev_b)
+        reduction_71[int(BLOCKS/2), THREADS](dev_a, dev_b)
+        reduction_72[1, int(BLOCKS/4)](dev_b, dev_b)
     sum = dev_b.copy_to_host()
     return sum
 
