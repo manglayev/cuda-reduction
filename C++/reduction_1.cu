@@ -50,6 +50,13 @@ __device__ int* reduction_10(int *g_idata, int *g_odata)
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
   sdata[threadIdx.x] = g_idata[i];
   __syncthreads();
+  /*
+  if(blockIdx.x == 0)
+  {
+    printf("before loop sdata[%d] = %d; ", threadIdx.x, sdata[threadIdx.x]);
+    printf("\n");
+  }
+  */
   // do reduction in shared mem
   for(unsigned int s = 1; s < blockDim.x; s *= 2)
   {
@@ -58,6 +65,13 @@ __device__ int* reduction_10(int *g_idata, int *g_odata)
       sdata[threadIdx.x] += sdata[threadIdx.x + s];
     }
     __syncthreads();
+    /*
+    if(blockIdx.x == 0)
+    {
+      printf("sdata[%d] = %d; ", threadIdx.x, sdata[threadIdx.x]);
+      printf("\n");
+    }
+    */
   }
   // write result for this block to global mem
   if (threadIdx.x == 0)
